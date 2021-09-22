@@ -135,7 +135,7 @@ func (c *categoryStore) ListCategory() ([]Category, error) {
 func (c *categoryStore) GetCategory(id string) (*Category, error) {
 	category := &Category{}
 	categoryString := ""
-	err := c.db.QueryRow("select id, name, small_description, big_description, image_url from categories where id = $1 limit 1", id).
+	err := c.db.QueryRow("select id, name, small_description, big_description, image_url, category_type from categories where id = $1 limit 1", id).
 		Scan(&category.Id, &category.Name, &category.SmallDescription, &category.BigDescription, &category.ImageUrl, &categoryString)
 	if err == sql.ErrNoRows {
 		return nil, ErrCategoryNotFound
