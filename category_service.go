@@ -1,6 +1,10 @@
 package category_nurzhas_store
 
-import "github.com/google/uuid"
+import (
+	"errors"
+	"github.com/google/uuid"
+	setdata_common "github.com/kirigaikabuto/setdata-common"
+)
 
 type CategoryService interface {
 	CreateCategory(cmd *CreateCategoryCommand) (*Category, error)
@@ -19,12 +23,16 @@ func NewCategoryService(cStore CategoryStore) CategoryService {
 }
 
 func (c *categoryService) CreateCategory(cmd *CreateCategoryCommand) (*Category, error) {
+	if !setdata_common.IsCategoryExist(cmd.CategoryType) {
+		return nil, errors.New("Incorrect category type")
+	}
 	category := &Category{
 		Id:               uuid.New().String(),
 		Name:             cmd.Name,
 		SmallDescription: cmd.SmallDescription,
 		BigDescription:   cmd.BigDescription,
 		ImageUrl:         cmd.ImageUrl,
+		CategoryType:     setdata_common.ToCategoryType(cmd.CategoryType),
 	}
 	return c.categoryStore.CreateCategory(category)
 }
@@ -46,6 +54,13 @@ func (c *categoryService) UpdateCategory(cmd *UpdateCategoryCommand) (*Category,
 	}
 	if cmd.ImageUrl != "" && oldCategory.ImageUrl != cmd.ImageUrl {
 		categoryUpdate.ImageUrl = &cmd.ImageUrl
+	}
+	if cmd.CategoryType != "" && oldCategory.CategoryType.ToString() != cmd.CategoryType {
+		if !setdata_common.IsCategoryExist(cmd.CategoryType) {
+			return nil, errors.New("Incorrect category type")
+		}
+		catType := setdata_common.ToCategoryType(cmd.CategoryType)
+		categoryUpdate.CategoryType = &catType
 	}
 	return c.categoryStore.UpdateCategory(categoryUpdate)
 }

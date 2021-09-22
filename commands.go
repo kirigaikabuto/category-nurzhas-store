@@ -5,6 +5,7 @@ type CreateCategoryCommand struct {
 	SmallDescription string `json:"small_description"`
 	BigDescription   string `json:"big_description"`
 	ImageUrl         string `json:"image_url"`
+	CategoryType     string `json:"category_type"`
 }
 
 func (cmd *CreateCategoryCommand) Exec(svc interface{}) (interface{}, error) {
@@ -17,6 +18,7 @@ type UpdateCategoryCommand struct {
 	SmallDescription string `json:"small_description"`
 	BigDescription   string `json:"big_description"`
 	ImageUrl         string `json:"image_url"`
+	CategoryType     string `json:"category_type"`
 }
 
 func (cmd *UpdateCategoryCommand) Exec(svc interface{}) (interface{}, error) {
