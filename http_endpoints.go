@@ -35,25 +35,25 @@ func (h *httpEndpoints) MakeUploadPricesFile() func(w http.ResponseWriter, r *ht
 		buf := bytes.NewBuffer(nil)
 		file, header, err := r.FormFile("fileupload")
 		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, err)
+			respondJSON(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 		name := strings.Split(header.Filename, ".")
 		fmt.Printf("File name %s\n", name[0])
 		_, err = io.Copy(buf, file)
 		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, err)
+			respondJSON(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 		err = file.Close()
 		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, err)
+			respondJSON(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 		resp, err := h.ch.ExecCommand(cmd)
 
 		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, err)
+			respondJSON(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 		respondJSON(w, http.StatusOK, resp)
