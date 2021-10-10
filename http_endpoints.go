@@ -19,6 +19,10 @@ type httpEndpoints struct {
 	ch setdata_common.CommandHandler
 }
 
+func NewHttpEndpoints(ch setdata_common.CommandHandler) HttpEndpoints {
+	return &httpEndpoints{ch: ch}
+}
+
 func (h *httpEndpoints) MakeUploadPricesFile() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		setupResponse(&w, r)
