@@ -50,6 +50,7 @@ func (h *httpEndpoints) MakeUploadPricesFile() func(w http.ResponseWriter, r *ht
 			respondJSON(w, http.StatusInternalServerError, err.Error())
 			return
 		}
+		cmd.File = buf
 		resp, err := h.ch.ExecCommand(cmd)
 
 		if err != nil {
