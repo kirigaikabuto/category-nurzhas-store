@@ -6,6 +6,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	_ "github.com/lib/pq"
 )
 
 var categoryQueries = []string{
