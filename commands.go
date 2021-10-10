@@ -1,5 +1,7 @@
 package category_nurzhas_store
 
+import "bytes"
+
 type CreateCategoryCommand struct {
 	Name             string `json:"name"`
 	SmallDescription string `json:"small_description"`
@@ -46,4 +48,18 @@ type DeleteCategoryCommand struct {
 
 func (cmd *DeleteCategoryCommand) Exec(svc interface{}) (interface{}, error) {
 	return nil, svc.(CategoryService).DeleteCategory(cmd)
+}
+
+type UploadPricesFileCommand struct {
+	Name string        `json:"name"`
+	File *bytes.Buffer `json:"file" form:"file"`
+}
+
+func (cmd *UploadPricesFileCommand) Exec(svc interface{}) (interface{}, error) {
+	return svc.(CategoryService).UploadPricesFile(cmd)
+}
+
+type UploadPricesFileResponse struct {
+	Name    string `json:"name"`
+	FileUrl string `json:"file_url"`
 }

@@ -12,14 +12,16 @@ type CategoryService interface {
 	ListCategory(cmd *ListCategoryCommand) ([]Category, error)
 	GetCategory(cmd *GetCategoryCommand) (*Category, error)
 	DeleteCategory(cmd *DeleteCategoryCommand) error
+	UploadPricesFile(cmd *UploadPricesFileCommand) (*UploadPricesFileResponse, error)
 }
 
 type categoryService struct {
 	categoryStore CategoryStore
+	s3Uploader    S3Uploader
 }
 
-func NewCategoryService(cStore CategoryStore) CategoryService {
-	return &categoryService{categoryStore: cStore}
+func NewCategoryService(cStore CategoryStore, s3 S3Uploader) CategoryService {
+	return &categoryService{categoryStore: cStore, s3Uploader: s3}
 }
 
 func (c *categoryService) CreateCategory(cmd *CreateCategoryCommand) (*Category, error) {
@@ -75,4 +77,15 @@ func (c *categoryService) GetCategory(cmd *GetCategoryCommand) (*Category, error
 
 func (c *categoryService) DeleteCategory(cmd *DeleteCategoryCommand) error {
 	return c.categoryStore.DeleteCategory(cmd.Id)
+}
+
+func (c *categoryService) UploadPricesFile(cmd *UploadPricesFileCommand) (*UploadPricesFileResponse, error) {
+	response := &UploadPricesFileResponse{}
+	fileResponse, err := c.s3Uploader.UploadFile(cmd.File.Bytes(), cmd.Name, "xlsx")
+	if err != nil {
+		return nil, err
+	}
+	response.FileUrl = fileResponse.FileUrl
+	response.Name = cmd.Name
+	return response, nil
 }
