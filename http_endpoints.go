@@ -7,6 +7,7 @@ import (
 	"fmt"
 	setdata_common "github.com/kirigaikabuto/setdata-common"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -14,6 +15,8 @@ import (
 type HttpEndpoints interface {
 	MakeUploadPricesFile() func(w http.ResponseWriter, r *http.Request)
 	MakeGetUploadPricesFile() func(w http.ResponseWriter, r *http.Request)
+	MakeCreateCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
+	MakeGetCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
 }
 
 type httpEndpoints struct {
@@ -30,32 +33,32 @@ func (h *httpEndpoints) MakeUploadPricesFile() func(w http.ResponseWriter, r *ht
 		cmd := &UploadPricesFileCommand{}
 		cmd.Name = r.URL.Query().Get("name")
 		if cmd.Name == "" {
-			respondJSON(w, http.StatusInternalServerError, errors.New("please need name of file"))
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(errors.New("please need name of file")))
 			return
 		}
 		buf := bytes.NewBuffer(nil)
 		file, header, err := r.FormFile("fileupload")
 		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, err.Error())
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
 			return
 		}
 		name := strings.Split(header.Filename, ".")
 		fmt.Printf("File name %s\n", name[0])
 		_, err = io.Copy(buf, file)
 		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, err.Error())
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
 			return
 		}
 		err = file.Close()
 		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, err.Error())
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
 			return
 		}
 		cmd.File = buf
 		resp, err := h.ch.ExecCommand(cmd)
 
 		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, err.Error())
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
 			return
 		}
 		respondJSON(w, http.StatusOK, resp)
@@ -68,15 +71,56 @@ func (h *httpEndpoints) MakeGetUploadPricesFile() func(w http.ResponseWriter, r 
 		cmd := &GetPricesFileCommand{}
 		cmd.Name = r.URL.Query().Get("name")
 		if cmd.Name == "" {
-			respondJSON(w, http.StatusInternalServerError, errors.New("please need name of file"))
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(errors.New("please need name of file")))
 			return
 		}
 		resp, err := h.ch.ExecCommand(cmd)
 		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, err.Error())
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
 			return
 		}
 		respondJSON(w, http.StatusOK, resp)
+	}
+}
+
+func (h *httpEndpoints) MakeCreateCategoryEndpoint() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		setupResponse(&w, r)
+		cmd := &CreateCategoryCommand{}
+		dataBytes, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		err = json.Unmarshal(dataBytes, &cmd)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		response, err := h.ch.ExecCommand(cmd)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		respondJSON(w, http.StatusCreated, response)
+	}
+}
+
+func (h *httpEndpoints) MakeGetCategoryEndpoint() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		setupResponse(&w, r)
+		cmd := &GetCategoryCommand{}
+		cmd.Id = r.URL.Query().Get("id")
+		if cmd.Id == "" {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(errors.New("please need id of category")))
+			return
+		}
+		response, err := h.ch.ExecCommand(cmd)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		respondJSON(w, http.StatusOK, response)
 	}
 }
 

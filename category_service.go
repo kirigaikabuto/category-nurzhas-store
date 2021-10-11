@@ -35,7 +35,6 @@ func (c *categoryService) CreateCategory(cmd *CreateCategoryCommand) (*Category,
 		Name:             cmd.Name,
 		SmallDescription: cmd.SmallDescription,
 		BigDescription:   cmd.BigDescription,
-		ImageUrl:         cmd.ImageUrl,
 		CategoryType:     setdata_common.ToCategoryType(cmd.CategoryType),
 	}
 	return c.categoryStore.CreateCategory(category)
