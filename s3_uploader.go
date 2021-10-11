@@ -64,6 +64,8 @@ func (updr *defaultS3Uploader) UploadFile(file []byte, key, fileType string) (*F
 		contentType = "text/xml"
 	} else if fileType == "json" {
 		contentType = "application/json"
+	} else if fileType == "png" {
+		contentType = "image/png"
 	} else {
 		contentType = "application/octet-stream"
 	}
