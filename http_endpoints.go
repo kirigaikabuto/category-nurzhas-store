@@ -19,6 +19,7 @@ type HttpEndpoints interface {
 	MakeCreateCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
 	MakeGetCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
 	MakeUploadCategoryImageEndpoint() func(w http.ResponseWriter, r *http.Request)
+	MakeListCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
 }
 
 type httpEndpoints struct {
