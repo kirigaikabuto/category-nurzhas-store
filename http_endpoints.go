@@ -15,6 +15,7 @@ import (
 type HttpEndpoints interface {
 	MakeUploadPricesFile() func(w http.ResponseWriter, r *http.Request)
 	MakeGetUploadPricesFile() func(w http.ResponseWriter, r *http.Request)
+
 	MakeCreateCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
 	MakeGetCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
 }

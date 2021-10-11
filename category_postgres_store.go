@@ -10,7 +10,7 @@ import (
 )
 
 var categoryQueries = []string{
-	`create table if not exists category(
+	`create table if not exists categories(
 		id text,
 		name text,
 		small_description text,
