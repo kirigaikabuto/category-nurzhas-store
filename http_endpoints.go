@@ -13,6 +13,7 @@ import (
 
 type HttpEndpoints interface {
 	MakeUploadPricesFile() func(w http.ResponseWriter, r *http.Request)
+	MakeGetUploadPricesFile() func(w http.ResponseWriter, r *http.Request)
 }
 
 type httpEndpoints struct {
@@ -53,6 +54,24 @@ func (h *httpEndpoints) MakeUploadPricesFile() func(w http.ResponseWriter, r *ht
 		cmd.File = buf
 		resp, err := h.ch.ExecCommand(cmd)
 
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respondJSON(w, http.StatusOK, resp)
+	}
+}
+
+func (h *httpEndpoints) MakeGetUploadPricesFile() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		setupResponse(&w, r)
+		cmd := &GetPricesFileCommand{}
+		cmd.Name = r.URL.Query().Get("name")
+		if cmd.Name == "" {
+			respondJSON(w, http.StatusInternalServerError, errors.New("please need name of file"))
+			return
+		}
+		resp, err := h.ch.ExecCommand(cmd)
 		if err != nil {
 			respondJSON(w, http.StatusInternalServerError, err.Error())
 			return

@@ -26,6 +26,7 @@ type S3Uploader interface {
 	DeleteFile(key, fileType string) error
 	FileExist(key, fileType string) (bool, error)
 	ListFile() []string
+	GetFile(key, fileType string) (string, error)
 }
 
 type defaultS3Uploader struct {
@@ -109,6 +110,22 @@ func (updr *defaultS3Uploader) FileExist(key, fileType string) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func (updr *defaultS3Uploader) GetFile(key, fileType string) (string, error) {
+	filePath := key + "_original." + fileType
+	_, err := updr.Uploader.GetObject(&s3.GetObjectInput{
+		Bucket: aws.String(updr.Bucket),
+		Key:    aws.String(filePath),
+	})
+	if err != nil {
+		if strings.Contains(err.Error(), "NoSuchKey:") {
+			return "", nil
+		} else {
+			return "", err
+		}
+	}
+	return updr.Uploader.Endpoint + filePath, nil
 }
 
 func (updr *defaultS3Uploader) ListFile() []string {

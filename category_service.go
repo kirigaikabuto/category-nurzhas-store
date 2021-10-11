@@ -12,7 +12,9 @@ type CategoryService interface {
 	ListCategory(cmd *ListCategoryCommand) ([]Category, error)
 	GetCategory(cmd *GetCategoryCommand) (*Category, error)
 	DeleteCategory(cmd *DeleteCategoryCommand) error
+
 	UploadPricesFile(cmd *UploadPricesFileCommand) (*UploadPricesFileResponse, error)
+	GetPricesFile(cmd *GetPricesFileCommand) (*GetPricesFileResponse, error)
 }
 
 type categoryService struct {
@@ -88,4 +90,14 @@ func (c *categoryService) UploadPricesFile(cmd *UploadPricesFileCommand) (*Uploa
 	response.FileUrl = fileResponse.FileUrl
 	response.Name = cmd.Name
 	return response, nil
+}
+
+func (c *categoryService) GetPricesFile(cmd *GetPricesFileCommand) (*GetPricesFileResponse, error) {
+	res := &GetPricesFileResponse{}
+	fileUrl, err := c.s3Uploader.GetFile(cmd.Name, "xlsx")
+	if err != nil {
+		return nil, err
+	}
+	res.FileUrl = fileUrl
+	return res, nil
 }

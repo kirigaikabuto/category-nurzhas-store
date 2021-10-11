@@ -63,3 +63,15 @@ type UploadPricesFileResponse struct {
 	Name    string `json:"name"`
 	FileUrl string `json:"file_url"`
 }
+
+type GetPricesFileCommand struct {
+	Name string `json:"name"`
+}
+
+func (cmd *GetPricesFileCommand) Exec(svc interface{}) (interface{}, error) {
+	return svc.(CategoryService).GetPricesFile(cmd)
+}
+
+type GetPricesFileResponse struct {
+	FileUrl string `json:"file_url"`
+}
