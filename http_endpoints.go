@@ -162,7 +162,19 @@ func (h *httpEndpoints) MakeUploadCategoryImageEndpoint() func(w http.ResponseWr
 		}
 		respondJSON(w, http.StatusOK, resp)
 	}
+}
 
+func (h *httpEndpoints) MakeListCategoryEndpoint() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		setupResponse(&w, r)
+		cmd := &ListCategoryCommand{}
+		response, err := h.ch.ExecCommand(cmd)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		respondJSON(w, http.StatusOK, response)
+	}
 }
 
 func setupResponse(w *http.ResponseWriter, req *http.Request) {
