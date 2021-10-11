@@ -33,7 +33,6 @@ type defaultS3Uploader struct {
 	Bucket         string
 	UploadFilesURI string
 	Uploader       *s3.S3
-	Endpoint       string
 }
 
 func NewS3Uploader(endpoint, accessKey, secretKey, bucket, uploadedFilesURI, region string) (S3Uploader, error) {
@@ -54,7 +53,6 @@ func NewS3Uploader(endpoint, accessKey, secretKey, bucket, uploadedFilesURI, reg
 		Bucket:         bucket,
 		UploadFilesURI: uploadedFilesURI,
 		Uploader:       s3Client,
-		Endpoint:       endpoint,
 	}, nil
 }
 
@@ -127,7 +125,7 @@ func (updr *defaultS3Uploader) GetFile(key, fileType string) (string, error) {
 			return "", err
 		}
 	}
-	return updr.Endpoint + "/" + filePath, nil
+	return updr.UploadFilesURI + "/" + filePath, nil
 }
 
 func (updr *defaultS3Uploader) ListFile() []string {
