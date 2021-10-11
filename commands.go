@@ -75,3 +75,12 @@ func (cmd *GetPricesFileCommand) Exec(svc interface{}) (interface{}, error) {
 type GetPricesFileResponse struct {
 	FileUrl string `json:"file_url"`
 }
+
+type UploadCategoryImageCommand struct {
+	File *bytes.Buffer
+	Id   string `json:"id"`
+}
+
+func (cmd *UploadCategoryImageCommand) Exec(svc interface{}) (interface{}, error) {
+	return svc.(CategoryService).UploadCategoryImage(cmd)
+}

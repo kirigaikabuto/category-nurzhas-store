@@ -18,6 +18,7 @@ type HttpEndpoints interface {
 
 	MakeCreateCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
 	MakeGetCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
+	MakeUploadCategoryImageEndpoint() func(w http.ResponseWriter, r *http.Request)
 }
 
 type httpEndpoints struct {
@@ -123,6 +124,45 @@ func (h *httpEndpoints) MakeGetCategoryEndpoint() func(w http.ResponseWriter, r 
 		}
 		respondJSON(w, http.StatusOK, response)
 	}
+}
+
+func (h *httpEndpoints) MakeUploadCategoryImageEndpoint() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		setupResponse(&w, r)
+		cmd := &UploadCategoryImageCommand{}
+		cmd.Id = r.URL.Query().Get("id")
+		if cmd.Id == "" {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(errors.New("please need id of category")))
+			return
+		}
+		buf := bytes.NewBuffer(nil)
+		file, header, err := r.FormFile("file")
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		name := strings.Split(header.Filename, ".")
+		fmt.Printf("File name %s\n", name[0])
+		_, err = io.Copy(buf, file)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		err = file.Close()
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		cmd.File = buf
+		resp, err := h.ch.ExecCommand(cmd)
+
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		respondJSON(w, http.StatusOK, resp)
+	}
+
 }
 
 func setupResponse(w *http.ResponseWriter, req *http.Request) {

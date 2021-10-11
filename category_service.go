@@ -15,6 +15,7 @@ type CategoryService interface {
 
 	UploadPricesFile(cmd *UploadPricesFileCommand) (*UploadPricesFileResponse, error)
 	GetPricesFile(cmd *GetPricesFileCommand) (*GetPricesFileResponse, error)
+	UploadCategoryImage(cmd *UploadCategoryImageCommand) (*Category, error)
 }
 
 type categoryService struct {
@@ -99,4 +100,20 @@ func (c *categoryService) GetPricesFile(cmd *GetPricesFileCommand) (*GetPricesFi
 	}
 	res.FileUrl = fileUrl
 	return res, nil
+}
+
+func (c *categoryService) UploadCategoryImage(cmd *UploadCategoryImageCommand) (*Category, error) {
+	_, err := c.categoryStore.GetCategory(cmd.Id)
+	if err != nil {
+		return nil, err
+	}
+	uploadOutput, err := c.s3Uploader.UploadFile(cmd.File.Bytes(), cmd.Id, "png")
+	if err != nil {
+		return nil, err
+	}
+	updatedCategory, err := c.UpdateCategory(&UpdateCategoryCommand{
+		Id:       cmd.Id,
+		ImageUrl: uploadOutput.FileUrl,
+	})
+	return updatedCategory, nil
 }
