@@ -56,9 +56,6 @@ func (c *categoryService) UpdateCategory(cmd *UpdateCategoryCommand) (*Category,
 	if cmd.BigDescription != "" && oldCategory.BigDescription != cmd.BigDescription {
 		categoryUpdate.BigDescription = &cmd.BigDescription
 	}
-	if cmd.ImageUrl != "" && oldCategory.ImageUrl != cmd.ImageUrl {
-		categoryUpdate.ImageUrl = &cmd.ImageUrl
-	}
 	if cmd.CategoryType != "" && oldCategory.CategoryType.ToString() != cmd.CategoryType {
 		if !setdata_common.IsCategoryExist(cmd.CategoryType) {
 			return nil, errors.New("Incorrect category type")
