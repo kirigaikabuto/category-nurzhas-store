@@ -141,3 +141,20 @@ type GetUserByUsernameAndPassword struct {
 func (cmd *GetUserByUsernameAndPassword) Exec(svc interface{}) (interface{}, error) {
 	return svc.(UserService).GetUserByUsernameAndPassword(cmd)
 }
+
+type LoginUserCommand struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type RegisterUserCommand struct {
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	Email     string `json:"email"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+func (cmd *RegisterUserCommand) Exec(svc interface{}) (interface{}, error) {
+	return svc.(UserService).RegisterUser(cmd)
+}

@@ -20,6 +20,9 @@ type HttpEndpoints interface {
 	MakeGetCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
 	MakeUploadCategoryImageEndpoint() func(w http.ResponseWriter, r *http.Request)
 	MakeListCategoryEndpoint() func(w http.ResponseWriter, r *http.Request)
+
+	MakeRegisterUserEndpoint() func(w http.ResponseWriter, r *http.Request)
+	MakeLoginUserEndpoint() func(w http.ResponseWriter, r *http.Request)
 }
 
 type httpEndpoints struct {
@@ -175,6 +178,34 @@ func (h *httpEndpoints) MakeListCategoryEndpoint() func(w http.ResponseWriter, r
 			return
 		}
 		respondJSON(w, http.StatusOK, response)
+	}
+}
+
+func (h *httpEndpoints) MakeRegisterUserEndpoint() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		cmd := &RegisterUserCommand{}
+		dataBytes, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		err = json.Unmarshal(dataBytes, &cmd)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		response, err := h.ch.ExecCommand(cmd)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
+			return
+		}
+		respondJSON(w, http.StatusCreated, response)
+	}
+}
+
+func (h *httpEndpoints) MakeLoginUserEndpoint() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+
 	}
 }
 

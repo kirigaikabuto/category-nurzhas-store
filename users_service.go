@@ -12,6 +12,7 @@ type UserService interface {
 	GetUser(cmd *GetUserCommand) (*User, error)
 	ListUser(cmd *ListUserCommand) ([]User, error)
 	GetUserByUsernameAndPassword(cmd *GetUserByUsernameAndPassword) (*User, error)
+	RegisterUser(cmd *RegisterUserCommand) (*User, error)
 }
 
 type userService struct {
@@ -88,4 +89,18 @@ func (u *userService) ListUser(cmd *ListUserCommand) ([]User, error) {
 
 func (u *userService) GetUserByUsernameAndPassword(cmd *GetUserByUsernameAndPassword) (*User, error) {
 	return u.userStore.GetByUsernameAndPassword(cmd.Username, cmd.Password)
+}
+
+func (u *userService) RegisterUser(cmd *RegisterUserCommand) (*User, error) {
+	newUser, err := u.CreateUser(&CreateUserCommand{
+		Username:  cmd.Username,
+		Password:  cmd.Password,
+		Email:     cmd.Email,
+		FirstName: cmd.FirstName,
+		LastName:  cmd.LastName,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return newUser, nil
 }
