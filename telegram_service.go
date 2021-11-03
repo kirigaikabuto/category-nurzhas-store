@@ -53,6 +53,7 @@ func (t *telegramService) SendMessage(cmd *SendMessageCommand) error {
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>", "Фамилия:", cmd.LastName)
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>", "Телефон:", cmd.PhoneNumber)
 	cmd.Message = message
+	cmd.ParseMode = "HTML"
 	telegramBotIDs := []TelegramBot{}
 	if cmd.TelegramBoId == "" && t.defaultTelegramId == "" {
 		telegrams, err := t.ListTelegramBot(&ListTelegramBotCommand{})
