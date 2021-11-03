@@ -54,8 +54,12 @@ func (t *telegramService) SendMessage(cmd *SendMessageCommand) error {
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Телефон", cmd.PhoneNumber)
 	cmd.Message = message
 	cmd.ParseMode = "HTML"
+	return t.SendTelegramMessage(cmd.TelegramBoId, cmd.Message, cmd.ParseMode)
+}
+
+func (t *telegramService) SendTelegramMessage(telegramBotId, message, parseMode string) error {
 	telegramBotIDs := []TelegramBot{}
-	if cmd.TelegramBoId == "" && t.defaultTelegramId == "" {
+	if telegramBotId == "" && t.defaultTelegramId == "" {
 		telegrams, err := t.ListTelegramBot(&ListTelegramBotCommand{})
 		if err != nil {
 			return err
@@ -64,7 +68,7 @@ func (t *telegramService) SendMessage(cmd *SendMessageCommand) error {
 			telegramBotIDs = append(telegramBotIDs, v)
 		}
 	}
-	if cmd.TelegramBoId == "" && t.defaultTelegramId != "" {
+	if telegramBotId == "" && t.defaultTelegramId != "" {
 		defaultTelegram, err := t.GetTelegramBot(&GetTelegramBotCommand{Id: t.defaultTelegramId})
 		if err != nil {
 			return err
@@ -111,8 +115,8 @@ func (t *telegramService) SendMessage(cmd *SendMessageCommand) error {
 			sendMessageURl := fmt.Sprintf(baseUrl, v.AccessToken, "sendMessage")
 			jsonData, err := json.Marshal(SendTelegramMessage{
 				ChatId:    chID.Value,
-				ParseMode: cmd.ParseMode,
-				Text:      cmd.Message,
+				ParseMode: parseMode,
+				Text:      message,
 			})
 			_, err = client.Post(sendMessageURl, "application/json", bytes.NewReader(jsonData))
 			if err != nil {

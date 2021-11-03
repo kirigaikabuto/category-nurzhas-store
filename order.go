@@ -1,6 +1,7 @@
 package category_nurzhas_store
 
 type Order struct {
+	Id             string `json:"id"`
 	BuildingType   string `json:"building_type"`
 	Width          string `json:"width"`
 	Height         string `json:"height"`
