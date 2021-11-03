@@ -48,16 +48,6 @@ func (h *telegramBotHttpEndpoints) MakeListTelegramBotEndpoint() func(w http.Res
 	return func(w http.ResponseWriter, r *http.Request) {
 		setupResponse(&w, r)
 		cmd := &ListTelegramBotCommand{}
-		dataBytes, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
-			return
-		}
-		err = json.Unmarshal(dataBytes, &cmd)
-		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))
-			return
-		}
 		response, err := h.ch.ExecCommand(cmd)
 		if err != nil {
 			respondJSON(w, http.StatusInternalServerError, setdata_common.ErrToHttpResponse(err))

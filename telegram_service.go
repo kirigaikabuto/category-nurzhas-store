@@ -16,6 +16,7 @@ type TelegramService interface {
 	ListTelegramBot(cmd *ListTelegramBotCommand) ([]TelegramBot, error)
 	DeleteTelegramBot(cmd *DeleteTelegramBotCommand) error
 	SendMessage(cmd *SendMessageCommand) error
+	SendTelegramMessage(telegramBotId, message, parseMode string) error
 }
 
 type telegramService struct {
