@@ -49,9 +49,9 @@ func (t *telegramService) DeleteTelegramBot(cmd *DeleteTelegramBotCommand) error
 
 func (t *telegramService) SendMessage(cmd *SendMessageCommand) error {
 	message := ""
-	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>", "Имя:", cmd.FirstName)
-	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>", "Фамилия:", cmd.LastName)
-	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>", "Телефон:", cmd.PhoneNumber)
+	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Имя", cmd.FirstName)
+	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Фамилия", cmd.LastName)
+	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Телефон", cmd.PhoneNumber)
 	cmd.Message = message
 	cmd.ParseMode = "HTML"
 	telegramBotIDs := []TelegramBot{}
