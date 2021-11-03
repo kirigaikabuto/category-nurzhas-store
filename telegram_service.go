@@ -1,6 +1,5 @@
 package category_nurzhas_store
 
-
 import (
 	"bytes"
 	"encoding/json"
@@ -59,7 +58,7 @@ func (t *telegramService) SendMessage(cmd *SendMessageCommand) error {
 			telegramBotIDs = append(telegramBotIDs, v)
 		}
 	}
-	if cmd.TelegramBoId == "" {
+	if cmd.TelegramBoId == "" && t.defaultTelegramId != "" {
 		defaultTelegram, err := t.GetTelegramBot(&GetTelegramBotCommand{Id: t.defaultTelegramId})
 		if err != nil {
 			return err
