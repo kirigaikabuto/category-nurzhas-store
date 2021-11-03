@@ -33,9 +33,12 @@ func (cmd *ListTelegramBotCommand) Exec(service interface{}) (interface{}, error
 }
 
 type SendMessageCommand struct {
-	TelegramBoId string `json:"telegram_bot_id"`
-	Message      string `json:"message"`
-	ParseMode    string `json:"parse_mode"`
+	TelegramBoId string `json:"_"`
+	Message      string `json:"_"`
+	FirstName    string `json:"first_name"`
+	LastName     string `json:"last_name"`
+	PhoneNumber  string `json:"phone_number"`
+	ParseMode    string `json:"_"`
 }
 
 func (cmd *SendMessageCommand) Exec(service interface{}) (interface{}, error) {

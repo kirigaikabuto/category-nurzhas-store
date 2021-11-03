@@ -48,6 +48,11 @@ func (t *telegramService) DeleteTelegramBot(cmd *DeleteTelegramBotCommand) error
 }
 
 func (t *telegramService) SendMessage(cmd *SendMessageCommand) error {
+	message := ""
+	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>", "Имя:", cmd.FirstName)
+	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>", "Фамилия:", cmd.LastName)
+	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>", "Телефон:", cmd.PhoneNumber)
+	cmd.Message = message
 	telegramBotIDs := []TelegramBot{}
 	if cmd.TelegramBoId == "" && t.defaultTelegramId == "" {
 		telegrams, err := t.ListTelegramBot(&ListTelegramBotCommand{})
