@@ -33,6 +33,7 @@ func (o *orderService) CreateOrder(cmd *CreateOrderCommand) (*Order, error) {
 	order.Width = cmd.Width
 	order.Length = cmd.Length
 	message := ""
+	message += fmt.Sprint("<pre><b>Калькулятор</b></pre>\n")
 	message += fmt.Sprintf("<pre><b>%s</b></pre>\n", "Размер здания")
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Тип здания", cmd.BuildingType)
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Ширина", cmd.Width)

@@ -50,6 +50,7 @@ func (t *telegramService) DeleteTelegramBot(cmd *DeleteTelegramBotCommand) error
 
 func (t *telegramService) SendMessage(cmd *SendMessageCommand) error {
 	message := ""
+	message += fmt.Sprint("<pre><b>Заявка</b></pre>\n")
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Имя", cmd.FirstName)
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Фамилия", cmd.LastName)
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Телефон", cmd.PhoneNumber)
