@@ -58,13 +58,7 @@ func NewS3Uploader(endpoint, accessKey, secretKey, bucket, uploadedFilesURI, reg
 
 func (updr *defaultS3Uploader) UploadFile(file []byte, key, fileType string) (*FileInfo, error) {
 	var contentType string
-	if fileType == "csv" {
-		contentType = "text/csv"
-	} else if fileType == "xml" {
-		contentType = "text/xml"
-	} else if fileType == "json" {
-		contentType = "application/json"
-	} else if fileType == "png" {
+    if fileType == "png" {
 		contentType = "image/png"
 	} else {
 		contentType = "application/octet-stream"
