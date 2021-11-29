@@ -32,12 +32,14 @@ func (o *orderService) CreateOrder(cmd *CreateOrderCommand) (*Order, error) {
 	order.Height = cmd.Height
 	order.Width = cmd.Width
 	order.Length = cmd.Length
+	order.TotalSum = cmd.TotalSum
 	message := ""
 	message += fmt.Sprint("<pre><b>Калькулятор</b></pre>\n")
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Тип", cmd.PanelType)
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Утеплитель", cmd.InsulationType)
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Толщина панели", cmd.PanelDepth)
 	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Цвет панели", cmd.Color)
+	message += fmt.Sprintf("<pre>%s:<b>%s</b></pre>\n", "Полная сумма", cmd.TotalSum)
 	err := o.telegramService.SendTelegramMessage("", message, "HTML")
 	if err != nil {
 		return nil, err

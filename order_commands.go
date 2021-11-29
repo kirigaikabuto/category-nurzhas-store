@@ -11,6 +11,7 @@ type CreateOrderCommand struct {
 	LayoutType     string `json:"layout_type"`
 	PanelWidth     string `json:"panel_width"`
 	Color          string `json:"color"`
+	TotalSum       string `json:"total_sum"`
 }
 
 func (cmd *CreateOrderCommand) Exec(svc interface{}) (interface{}, error) {

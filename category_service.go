@@ -83,7 +83,7 @@ func (c *categoryService) DeleteCategory(cmd *DeleteCategoryCommand) error {
 
 func (c *categoryService) UploadPricesFile(cmd *UploadPricesFileCommand) (*UploadPricesFileResponse, error) {
 	response := &UploadPricesFileResponse{}
-	fileResponse, err := c.s3Uploader.UploadFile(cmd.File.Bytes(), cmd.Name, "xlsx")
+	fileResponse, err := c.s3Uploader.UploadFile(cmd.File.Bytes(), cmd.Name, "docx")
 	if err != nil {
 		return nil, err
 	}
