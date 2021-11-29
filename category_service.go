@@ -94,7 +94,7 @@ func (c *categoryService) UploadPricesFile(cmd *UploadPricesFileCommand) (*Uploa
 
 func (c *categoryService) GetPricesFile(cmd *GetPricesFileCommand) (*GetPricesFileResponse, error) {
 	res := &GetPricesFileResponse{}
-	fileUrl, err := c.s3Uploader.GetFile(cmd.Name, "xlsx")
+	fileUrl, err := c.s3Uploader.GetFile(cmd.Name, "docx")
 	if err != nil {
 		return nil, err
 	}
